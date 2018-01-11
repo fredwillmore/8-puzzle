@@ -7,7 +7,6 @@ import edu.princeton.cs.algs4.MinPQ;
 
 public class Solver {
 
-//    public int debugCount = 0;
     private class Node {
         private final Node predecessor;
         private final Board board;
@@ -19,8 +18,6 @@ public class Solver {
             this.moves = moves;
             this.predecessor = predecessor;
             this.score = board.manhattan() + moves;
-//            System.out.println("this should be getting bigger: " + moves);
-
         }
 
         public Board getBoard() {
@@ -36,18 +33,18 @@ public class Solver {
     private boolean solvable;
     private Node last = null;
 
-    public Solver(Board initial) {
+    public Solver(Board initial) {           // find a solution to the initial board (using the A* algorithm)
         if(initial == null)
             throw new IllegalArgumentException();
 
-        Comparator<Node> thinger = (Node a, Node b) -> {
+        Comparator<Node> nodeComparator = (Node a, Node b) -> {
             return Integer.compare(a.score, b.score);
         };
 
-        MinPQ<Node> pq = new MinPQ<Node>(1, thinger);
+        MinPQ<Node> pq = new MinPQ<Node>(1, nodeComparator);
         pq.insert(new Node(initial, 0, null));
 
-        MinPQ<Node> pqAlt = new MinPQ<Node>(1, thinger);
+        MinPQ<Node> pqAlt = new MinPQ<Node>(1, nodeComparator);
         pqAlt.insert(new Node(initial.twin(), 0, null));
 
         Node test;
@@ -59,10 +56,9 @@ public class Solver {
 
         moves = found ? pq.min().getMoves() : -1;
         solvable = found;
-    }           // find a solution to the initial board (using the A* algorithm)
+    }
 
     private boolean step(MinPQ<Node> pq) {
-        boolean found = false;
         Node test = pq.min();
         if (test != null && test.getBoard().isGoal()) {
             last = test;
@@ -81,11 +77,11 @@ public class Solver {
         return solvable;
     }
 
-    public int moves() {
+    public int moves() {                     // min number of moves to solve initial board; -1 if unsolvable
         return moves;
-    }                     // min number of moves to solve initial board; -1 if unsolvable
+    }
 
-    public Iterable<Board> solution() {
+    public Iterable<Board> solution() {      // sequence of boards in a shortest solution; null if unsolvable
         if(!solvable)
             return null;
 
@@ -97,7 +93,7 @@ public class Solver {
         } while (tracer != null);
 
         return it;
-    }      // sequence of boards in a shortest solution; null if unsolvable
+    }
 
     public static void main(String[] args) {
 //        testAlreadySolved();

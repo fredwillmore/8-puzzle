@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Board {
 
     private final int[][] blocks;
-//    private final Board goal;
     private final int n;
 
     public Board(int[][] blocks) {
@@ -23,7 +22,6 @@ public class Board {
         for (int y = 0; y < n; y++) {
             for (int x = 0; x < n; x++) {
                 score += hammingDistance(x, y, blocks[y][x]);
-//                score += (blocks[y][x] != 0 && (((blocks[y][x] - 1) % n) != x || ((blocks[y][x] - 1) / n) != y)) ? 1 : 0;
             }
         }
         return score;
@@ -41,7 +39,6 @@ public class Board {
         for (int y = 0; y < n; y++) {
             for (int x = 0; x < n; x++) {
                 score += manhattanDistance(x, y, blocks[y][x]);
-//                score += (blocks[y][x] == 0 ? 0 : Math.abs(((blocks[y][x] - 1) % n) - x) + Math.abs(((blocks[y][x] - 1) / n) - y));
             }
         }
         return score;
@@ -59,10 +56,14 @@ public class Board {
         return (value - 1) % n;
     }
 
+    private int goalValue(int x, int y) {
+        return (y*n + x + 1) % (n*n);
+    }
+
     public boolean isGoal() {                // is this board the goal board?
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (blocks[i][j] != (i*n + j + 1) % (n*n)) return false;
+                if (blocks[i][j] != goalValue(j, i)) return false;
             }
         }
         return true;
@@ -97,18 +98,9 @@ public class Board {
         return b;
     }
 
-
     public boolean equals(Object y) {        // does this board equal y?
         return y == null ? false : this.toString().equals(y.toString());
         // TODO: I don't want to depend on the string representation, but the API for Board doesn't give me access to blocks
-//        for (int i = 0; i < n; i++) {
-//            for (int j = 0; j < n; j++) {
-//                if(blocks[i][j] != y.blocks) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
     }
 
     public Iterable<Board> neighbors() {     // all neighboring boards
@@ -150,7 +142,6 @@ public class Board {
 
     public String toString() {               // string representation of this board (in the output format specified below)
         int fieldWidth = (int) Math.ceil(Math.log10(n*n)) + 1;
-//        int fieldWidth = Math.ceil(Math.log(n*n)) + 2;
         String str = "" + n + "\n";
         for (int[] row: blocks) {
             for (int value: row) {
@@ -159,7 +150,6 @@ public class Board {
             }
             str += "\n";
         }
-//        System.out.println(str);
         return str;
     }
 
@@ -272,6 +262,5 @@ public class Board {
         board.swapBlocks(TEST_IMMUTABLE, 0,0,1,0);
         System.out.println(board.manhattan());
     }
-
 
 }
